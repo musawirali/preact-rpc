@@ -1,0 +1,12 @@
+{
+  "name": "preact-rpc",
+  "version": "1.0.0",
+  "description": "React Pre-Rendering via RPC",
+  "repository": "https://github.com/musawirali/preact-rpc",
+  "license": "MIT",
+  "author": "Musawir Shah",
+  "main": "index.js",
+  "bin": {
+    "preact-rpc": "./bin/preact-rpc.js"
+  }
+}
