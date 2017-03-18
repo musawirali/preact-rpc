@@ -1,3 +1,5 @@
 #!/usr/bin/env node
+var StartServer = require('../lib/server').startServer;
 
-console.log('Yo');
+//StartServer(3232);
+StartServer('server.sock');
