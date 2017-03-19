@@ -3,6 +3,8 @@ React Pre-Rendering via RPC
 
 A simple JSON based socket server that fulfills React component render requests.
 
+[![https://nodei.co/npm/preact-rpc.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/preact-rpc.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/preact-rpc)
+
 The motivation for this project is to use React server-side rendering (aka pre-rendering) from a non-Node app, such as one
 written in Ruby, or Go.
 
