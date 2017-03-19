@@ -16,7 +16,7 @@ then be embedded in a view served on the client side.
 Starting the server is simple, and requires the path to the bundle file and the port to listen on:
 
 ```
-preact-rpc.js  --bundle=./lib/example/component.js --port=tmp/server.sock
+preact-rpc  --bundle=./lib/example/component.js --port=tmp/server.sock
 ```
 
 An example Go client is provided in the example-clients directory. Run the app and visit http://localhost:8080
