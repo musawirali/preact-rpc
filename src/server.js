@@ -1,6 +1,7 @@
 import net from 'net';
 import fs from 'fs';
 import _ from 'underscore';
+import winston from 'winston';
 import * as Config from './config';
 import { processRenderRequest } from './renderer';
 
@@ -14,10 +15,10 @@ import { processRenderRequest } from './renderer';
 export const startServer = (port, maxConnections = Config.DEFAULT_MAX_CONNECTIONS) => {
   // Create server and register socket event handlers
   const server = net.createServer(socket => {
-    console.log('Client connected');
+    winston.info('Client connected');
 
     // Error on client socket
-    socket.on('error', err => console.log('Error'));
+    socket.on('error', err => winston.error(err));
 
     // Intermediate data buffer for this socket.
     let dataBuff = '';
@@ -28,7 +29,7 @@ export const startServer = (port, maxConnections = Config.DEFAULT_MAX_CONNECTION
       const dataLen = strData.length;
       if ((buffLen + dataLen) > Config.MAX_DATA_BUFFER_SIZE) {
         // Reject
-        console.log('Buffer length exceded, resetting.');
+        winston.error('Buffer length exceded, resetting.');
       } else {
         const chunks = strData.split(Config.DATA_END_MARKER);
         dataBuff += _.first(chunks);
@@ -39,7 +40,7 @@ export const startServer = (port, maxConnections = Config.DEFAULT_MAX_CONNECTION
           buffLen = dataBuff.length;
 
           _.each(payloads, payload => {
-            console.log('Received', payload);
+            winston.info('Received', payload);
             processRenderRequest(socket, payload);
           });
         }
@@ -54,7 +55,7 @@ export const startServer = (port, maxConnections = Config.DEFAULT_MAX_CONNECTION
 
   // Logging to see server is listening.
   server.on('listening', () => {
-    console.log('Listening on port', port);
+    winston.info('Listening on port', port);
     // For file socket, set permissions
     if (isFileSocket) {
       fs.chmodSync(port, '777');
@@ -64,9 +65,9 @@ export const startServer = (port, maxConnections = Config.DEFAULT_MAX_CONNECTION
   // Handle re-listening for file socket by unlinking existing file.
   server.on('error', err => {
     if (isFileSocket && err.code === 'EADDRINUSE') {
-      console.log('Address in use, deleting socket file.');
+      winston.info('Address in use, deleting socket file.');
       fs.unlinkSync(port);
-      console.log('Start server again');
+      winston.info('Start server again');
       server.listen(port);
     } else {
       // Some other error has occurred. Handle it here.
@@ -75,7 +76,7 @@ export const startServer = (port, maxConnections = Config.DEFAULT_MAX_CONNECTION
   });
 
   // Start server.
-  console.log('Start server');
+  winston.info('Start server');
   server.listen(port);
 };
 

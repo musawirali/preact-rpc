@@ -2,6 +2,9 @@
 
 var fs = require('fs');
 var sh = require('shelljs');
+var log = require('winston');
+log.remove(log.transports.Console);
+log.add(log.transports.Console, {colorize: true, timestamp: true});
 var StartServer = require('../lib/server').startServer;
 
 /**

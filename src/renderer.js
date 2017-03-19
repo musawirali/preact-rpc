@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import winston from 'winston';
 import { writeJSON } from './util';
 
 /**
@@ -14,7 +15,7 @@ export const processRenderRequest = (socket, payload) => {
   try {
     json = JSON.parse(payload);
   } catch(err) {
-    console.log('Invalid payload', payload, err);
+    winston.error('Invalid payload', payload);
     return writeJSON(socket, {
       error: 'Invalid payload',
     });
@@ -23,6 +24,7 @@ export const processRenderRequest = (socket, payload) => {
   // Check request details
   const component = global.preactRPCGetComponent(json.component);
   if (!component) {
+    winston.error(`Component ${json.component} not found in registry`);
     return writeJSON(socket, {
       id: json.id,
       error: `Component ${json.component} not found in registry`,
@@ -39,6 +41,7 @@ export const processRenderRequest = (socket, payload) => {
       )
     );
   } catch(err) {
+    winston.error(`Render error [${json.component}]: ${err.toString()}`);
     return writeJSON(socket, {
       id: json.id,
       error: `Render error [${json.component}]: ${err.toString()}`,
@@ -50,6 +53,7 @@ export const processRenderRequest = (socket, payload) => {
     id: json.id,
     html,
   });
+  winston.info('Render response sent');
 };
 
 export default {};

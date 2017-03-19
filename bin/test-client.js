@@ -4,7 +4,11 @@ var net = require('net');
 var _ = require('underscore');
 var marker = require('../lib/config').DATA_END_MARKER;
 
-var client = net.connect('server.sock', function() {
+/**
+ * Test client that connects to RPC server and sends a render request.
+ */
+
+var client = net.connect('tmp/server.sock', function() {
   console.log('Connected');
   client.write(JSON.stringify({
     id: 1,
