@@ -13,10 +13,28 @@ on a socket (a TCP socket or a UNIX socket file). A client, such as a Go app, ca
 by providing a React component identifier and the props to use for rendering. The server returns with an HTML string, that can
 then be embedded in a view served on the client side.
 
-Starting the server is simple, and requires the path to the bundle file and the port to listen on:
+Install preact-rpc globally:
 
 ```
-preact-rpc  --bundle=./lib/example/component.js --port=tmp/server.sock
+npm install -g preact-rpc
+```
+
+In your component JS bundle, register your components so that preact-rpc can find them:
+
+```
+import { registerComponent } from 'preact-rpc';
+...
+registerComponent('comp1', MyComponent);
+registerComponent('comp2', MyOtherComponent);
+...
+```
+
+See lib/example/component.js for example.
+
+Next, start the server. It requires the path to the bundle file and the port to listen on:
+
+```
+preact-rpc --bundle=./lib/example/component.js --port=tmp/server.sock
 ```
 
 An example Go client is provided in the example-clients directory. Run the app and visit http://localhost:8080
