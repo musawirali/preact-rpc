@@ -4,7 +4,7 @@ import (
     "fmt"
     "net/http"
 
-    "../goclient"
+    "github.com/musawirali/preact-rpc/goclient"
 )
 
 // HTTP request handler
