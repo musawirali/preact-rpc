@@ -43,5 +43,17 @@ An example Go client is provided in the example-clients directory. Run the app a
 go run example-clients/client.go
 ```
 
+An example Ruby client is also provided in the example-clients directory. Install the gem:
+
+```
+gem install preact-rpc-client
+```
+
+And then run the example:
+
+```
+ruby example-clients/client.rb
+```
+
 ## More to come:
 Add support for Redux stores
