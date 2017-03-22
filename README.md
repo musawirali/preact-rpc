@@ -5,6 +5,8 @@ A simple JSON based socket server that fulfills React component render requests.
 
 [![https://nodei.co/npm/preact-rpc.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/preact-rpc.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/preact-rpc)
 
+Introduction and tutorial: [Server-side React Rendering From non-Node Environments](https://medium.com/@musawiralishah/server-side-react-rendering-from-non-node-environments-216021ad537d#.fzk015qwi)
+
 The motivation for this project is to use React server-side rendering (aka pre-rendering) from a non-Node app, such as one
 written in Ruby, or Go.
 
