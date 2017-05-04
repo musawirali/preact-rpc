@@ -72,7 +72,7 @@ func RenderComponent(componentName string, storeName *string, props interface{})
   payload := map[string]string{
     "id": fmt.Sprintf("%d", reqId),
     "component": componentName,
-    "props": jsonProps
+    "props": string(jsonProps),
   }
 
   if storeName != nil {
@@ -84,7 +84,7 @@ func RenderComponent(componentName string, storeName *string, props interface{})
     return nil, err
   }
 
-  fmt.Fprintf(conn, jsonPayload + data_end_marker)
+  fmt.Fprintf(conn, string(jsonPayload) + data_end_marker)
 
   // Parse JSON response.
   scanner := bufio.NewScanner(bufio.NewReader(conn))
