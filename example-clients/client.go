@@ -18,7 +18,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
     panic(err)
   }
   // All good, we can use resp.Html
-  fmt.Fprintf(w, resp.Html)
+  fmt.Fprintf(w, "<div id='counter'>" + resp.Html + "</div>")
 }
 
 // Test Go app that renders React component via Preact-RPC server.

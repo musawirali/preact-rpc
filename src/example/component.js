@@ -1,6 +1,5 @@
 import React from 'react';
-import { registerComponent, registerReduxStore } from '../api';
-import { createStore, combineReducers } from 'redux';
+import { combineReducers } from 'redux';
 import { connect } from 'react-redux';
 
 // Count reducer
@@ -16,25 +15,29 @@ const count = (state = 10, action) => {
 }
 
 // The store reducer for our Counter component.
-const mainReducer = combineReducers({
+export const reducer = combineReducers({
   count,
-});
-
-// Register the redux store creator
-registerReduxStore('counter', initialState => {
-  return createStore(mainReducer, initialState);
 });
 
 // A simple React component
 class Counter extends React.Component {
   render() {
     return React.createElement(
-      "div",
+      'div',
       null,
-      this.props.count
+      this.props.count,
+      React.createElement(
+        'button',
+        { onClick: () => this.props.dispatch({ type: 'increment' }) },
+        'inc'
+      ),
+      React.createElement(
+        'button',
+        { onClick: () => this.props.dispatch({ type: 'decrement' }) },
+        'dec'
+      )
     );
   }
 }
 
-// Register component for pre-rendering
-registerComponent('counter', connect(state => ({...state}))(Counter));
+export default connect(state => ({...state}))(Counter);
