@@ -59,20 +59,23 @@ func Connect(network string, address string) error {
 // Send render request for a component and associated props, and get HTML response.
 // The Connect() function must be called before calling this function.
 func RenderComponent(componentName string, storeName *string, props interface{}) (*RpcResponse, error) {
-  // Convert props to JSON
-  jsonProps, err := json.Marshal(props)
-  if err != nil {
-    return nil, err
-  }
-
   // Increment request ID
   reqId += 1
 
-  // Send Render request to RPC server.
+  // Render request to RPC server.
   payload := map[string]string{
     "id": fmt.Sprintf("%d", reqId),
     "component": componentName,
-    "props": string(jsonProps),
+  }
+
+  if props != nil {
+    // Convert props to JSON
+    jsonProps, err := json.Marshal(props)
+    if err != nil {
+      return nil, err
+    }
+
+    payload["props"] = string(jsonProps)
   }
 
   if storeName != nil {

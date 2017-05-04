@@ -10,9 +10,8 @@ import (
 // HTTP request handler
 func handler(w http.ResponseWriter, r *http.Request) {
   // Send render request to RPC server
-  resp, err := goclient.RenderComponent("counter", map[string](interface{}){
-    "toWhat": "Universe",
-  })
+  storeName := "counter"
+  resp, err := goclient.RenderComponent("counter", &storeName, nil)
   if err != nil {
     panic(err)
   }
