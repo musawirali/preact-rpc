@@ -63,8 +63,8 @@ func RenderComponent(componentName string, storeName *string, props interface{})
   reqId += 1
 
   // Render request to RPC server.
-  payload := map[string]string{
-    "id": fmt.Sprintf("%d", reqId),
+  payload := map[string]interface{}{
+    "id": reqId,
     "component": componentName,
   }
 
