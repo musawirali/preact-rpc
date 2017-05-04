@@ -10,8 +10,11 @@
     "preact-rpc": "./bin/preact-rpc.js"
   },
   "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-redux": "^5.0.4",
+    "redux": "^3.6.0",
     "shelljs": "^0.7.7",
     "underscore": "^1.8.3",
     "winston": "^2.3.1"

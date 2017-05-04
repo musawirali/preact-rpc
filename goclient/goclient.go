@@ -58,7 +58,7 @@ func Connect(network string, address string) error {
 
 // Send render request for a component and associated props, and get HTML response.
 // The Connect() function must be called before calling this function.
-func RenderComponent(componentName string, props interface{}) (*RpcResponse, error) {
+func RenderComponent(componentName string, storeName *string, props interface{}) (*RpcResponse, error) {
   // Convert props to JSON
   jsonProps, err := json.Marshal(props)
   if err != nil {
@@ -69,12 +69,22 @@ func RenderComponent(componentName string, props interface{}) (*RpcResponse, err
   reqId += 1
 
   // Send Render request to RPC server.
-  fmt.Fprintf(conn, `{
-    "id": %d,
-    "component": "%s",
-    "props": %s
+  payload := map[string]string{
+    "id": fmt.Sprintf("%d", reqId),
+    "component": componentName,
+    "props": jsonProps
   }
-  ` + "\r\n.", reqId, componentName, jsonProps)
+
+  if storeName != nil {
+    payload["store"] = *storeName
+  }
+
+  jsonPayload, err := json.Marshal(payload)
+  if err != nil {
+    return nil, err
+  }
+
+  fmt.Fprintf(conn, jsonPayload + data_end_marker)
 
   // Parse JSON response.
   scanner := bufio.NewScanner(bufio.NewReader(conn))

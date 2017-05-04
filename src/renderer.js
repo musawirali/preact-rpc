@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import { Provider } from 'react-redux';
 import winston from 'winston';
 import { writeJSON } from './util';
 
@@ -31,17 +32,46 @@ export const processRenderRequest = (socket, payload) => {
     });
   }
 
+  let store = null;
+  if (!!json.store) {
+    const createStore = global.preactRPCGetStoreCreator(json.store);
+    if (!createStore) {
+      winston.error(`Store creator with ID ${json.store} not found in registry`);
+      return writeJSON(socket, {
+        id: json.id,
+        error: `Store creator with ID ${json.store} not found in registry`,
+      });
+    }
+
+    try {
+      store = createStore(json.props);
+      if (!store) {
+        winston.error(`Store creation error [${json.store}]: returned null`);
+        return writeJSON(socket, {
+          id: json.id,
+          error: `Store creation error [${json.store}]: returned null`,
+        });
+      }
+    } catch (err) {
+      winston.error(`Store creation error [${json.store}]: ${err.toString()}`);
+      return writeJSON(socket, {
+        id: json.id,
+        error: `Store creation error [${json.store}]: ${err.toString()}`,
+      });
+    }
+  }
+
   // Call render method
   let html;
   try {
     html = ReactDOMServer.renderToString(
       React.createElement(
         component,
-        json.props || {}
+        store ? {store} : (json.props || {})
       )
     );
   } catch(err) {
-    winston.error(`Render error [${json.component}]: ${err.toString()}`);
+    winston.error(`Render error [${json.component}]: ${err.toString()} ${err.stack}`);
     return writeJSON(socket, {
       id: json.id,
       error: `Render error [${json.component}]: ${err.toString()}`,
