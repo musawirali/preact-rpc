@@ -68,16 +68,12 @@ func RenderComponent(componentName string, storeName *string, props interface{})
     "component": componentName,
   }
 
+  // Add props if there are any
   if props != nil {
-    // Convert props to JSON
-    jsonProps, err := json.Marshal(props)
-    if err != nil {
-      return nil, err
-    }
-
-    payload["props"] = string(jsonProps)
+    payload["props"] = props
   }
 
+  // Add store name if provided
   if storeName != nil {
     payload["store"] = *storeName
   }

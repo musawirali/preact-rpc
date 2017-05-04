@@ -11,7 +11,9 @@ import (
 func handler(w http.ResponseWriter, r *http.Request) {
   // Send render request to RPC server
   storeName := "counter"
-  resp, err := goclient.RenderComponent("counter", &storeName, nil)
+  resp, err := goclient.RenderComponent("counter", &storeName, map[string]int{
+    "count": 5,
+  })
   if err != nil {
     panic(err)
   }
