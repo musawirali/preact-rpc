@@ -2,6 +2,7 @@ package main
 
 import (
     "fmt"
+    "io/ioutil"
     "net/http"
 
     "github.com/musawirali/preact-rpc/goclient"
@@ -18,7 +19,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
     panic(err)
   }
   // All good, we can use resp.Html
-  fmt.Fprintf(w, "<div id='counter'>" + resp.Html + "</div>")
+  tmpl := `
+    <html>
+      <body>
+        %s
+        <div id='counter'>%s</div>
+
+        <script type='text/javascript' src='/client.js'></script>
+      </body>
+    </html>
+  `
+  fmt.Fprintf(w, tmpl, resp.HydrateHtml, resp.Html)
 }
 
 // Test Go app that renders React component via Preact-RPC server.
@@ -28,6 +39,16 @@ func main() {
     panic(err)
   }
 
+  // Load client.js file
+  clientJS, err := ioutil.ReadFile("./lib/example/client.js")
+  if err != nil {
+    panic(err)
+  }
+
   http.HandleFunc("/", handler)
+  http.HandleFunc("/client.js", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprint(w, string(clientJS))
+  })
+
   http.ListenAndServe(":8080", nil)
 }

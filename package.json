@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "browserify": "^14.3.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.4",

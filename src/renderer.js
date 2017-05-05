@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { Provider } from 'react-redux';
 import winston from 'winston';
 import { writeJSON } from './util';
 

@@ -37,13 +37,14 @@ func split(data []byte, atEOF bool) (advance int, token []byte, err error) {
 }
 
 // An RpcResponse is returned for a RenderComponent() call.
-// If consists of an Id, the rendered HTML, and an error message
-// from the server.
+// It consists of an Id, the rendered HTML, the html for hydrating
+// the redux store and an error message from the server.
 // The Id is the same value sent in the request, and is used to
 // match the response to the request.
 type RpcResponse struct {
   Id int `json:"id"`
   Html string `json:"html"`
+  HydrateHtml string `json:"hydrate_html"`
   Error string `json:"error"`
 }
 
@@ -99,6 +100,20 @@ func RenderComponent(componentName string, storeName *string, props interface{})
   var resp RpcResponse
   if err := json.Unmarshal(jsonBlob, &resp); err != nil {
     return nil, err
+  }
+
+  // Add hydration html if store was provided
+  if storeName != nil && props != nil {
+    jsonProps, _ := json.Marshal(props)
+
+    resp.HydrateHtml = fmt.Sprintf(`
+      <div
+        class='preact-rpc-store'
+        data-props='%s'
+        data-store-name='%s'
+        style='display: none'>
+      </div>
+    `, *storeName, jsonProps)
   }
 
   return &resp, nil
