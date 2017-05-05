@@ -70,16 +70,21 @@ func Connect(network string, address string) {
   shouldConnect = true
 }
 
+func connectToNetwork() error {
+  var err error
+  conn, err = net.Dial(connNet, connAddr)
+  return err
+}
+
 // Send render request for a component and associated props, and get HTML response.
 // The Connect() function must be called before calling this function.
 func RenderComponent(componentName string, storeName *string, props interface{}) (*RpcResponse, error) {
   mu.Lock()
   defer mu.Unlock()
 
-  var err error
+
   if shouldConnect {
-    conn, err = net.Dial(connNet, connAddr)
-    if err != nil {
+    if err := connectToNetwork(); err != nil {
       return nil, err
     }
     shouldConnect = false
@@ -110,6 +115,7 @@ func RenderComponent(componentName string, storeName *string, props interface{})
   }
 
   if _, err := fmt.Fprintf(conn, string(jsonPayload) + data_end_marker); err != nil {
+    // We'll try reconnecting in the next call
     shouldConnect = true
     return nil, ErrConnectionWrite
   }
