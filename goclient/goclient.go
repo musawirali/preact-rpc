@@ -48,6 +48,11 @@ type RpcResponse struct {
   Error string `json:"error"`
 }
 
+// Error types
+var (
+  ErrConnectionWrite = fmt.Errorf("Could not write to connection")
+)
+
 // Connect to RPC server.
 // The parameters are the same as that of net.Dial(), and depend
 // on where the preact-rpc server is listening.
@@ -85,7 +90,7 @@ func RenderComponent(componentName string, storeName *string, props interface{})
   }
 
   if _, err := fmt.Fprintf(conn, string(jsonPayload) + data_end_marker); err != nil {
-    return nil, err
+    return nil, ErrConnectionWrite
   }
 
   // Parse JSON response.
