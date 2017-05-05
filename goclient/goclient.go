@@ -84,7 +84,9 @@ func RenderComponent(componentName string, storeName *string, props interface{})
     return nil, err
   }
 
-  fmt.Fprintf(conn, string(jsonPayload) + data_end_marker)
+  if _, err := fmt.Fprintf(conn, string(jsonPayload) + data_end_marker); err != nil {
+    return nil, err
+  }
 
   // Parse JSON response.
   scanner := bufio.NewScanner(bufio.NewReader(conn))
