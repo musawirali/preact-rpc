@@ -9,6 +9,7 @@ import (
   "encoding/json"
   "fmt"
   "net"
+  "sync"
 )
 
 // Buffer data marker
@@ -16,8 +17,15 @@ const data_end_marker = "\r\n."
 
 // The connection to the RPC server
 var conn net.Conn
+var shouldConnect bool
+var connNet string
+var connAddr string
+
 // Request ID
 var reqId int = 0
+
+// Mutex to synchronize render calls
+var mu sync.Mutex
 
 // Split function for the Scanner to create response tokens from the
 // connection read buffer.
@@ -56,15 +64,27 @@ var (
 // Connect to RPC server.
 // The parameters are the same as that of net.Dial(), and depend
 // on where the preact-rpc server is listening.
-func Connect(network string, address string) error {
-  var err error
-  conn, err = net.Dial(network, address)
-  return err
+func Connect(network string, address string) {
+  connNet = network
+  connAddr = address
+  shouldConnect = true
 }
 
 // Send render request for a component and associated props, and get HTML response.
 // The Connect() function must be called before calling this function.
 func RenderComponent(componentName string, storeName *string, props interface{}) (*RpcResponse, error) {
+  mu.Lock()
+  defer mu.Unlock()
+
+  var err error
+  if shouldConnect {
+    conn, err = net.Dial(connNet, connAddr)
+    if err != nil {
+      return nil, err
+    }
+    shouldConnect = false
+  }
+
   // Increment request ID
   reqId += 1
 
@@ -90,6 +110,7 @@ func RenderComponent(componentName string, storeName *string, props interface{})
   }
 
   if _, err := fmt.Fprintf(conn, string(jsonPayload) + data_end_marker); err != nil {
+    shouldConnect = true
     return nil, ErrConnectionWrite
   }
 

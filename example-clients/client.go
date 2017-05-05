@@ -35,9 +35,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 // Test Go app that renders React component via Preact-RPC server.
 func main() {
   // Connect to the port the preact-rpc server is listening on.
-  if err := goclient.Connect("unix", "tmp/server.sock"); err != nil {
-    panic(err)
-  }
+  goclient.Connect("unix", "tmp/server.sock")
 
   // Load client.js file
   clientJS, err := ioutil.ReadFile("./lib/example/client.js")
