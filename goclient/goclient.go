@@ -113,7 +113,7 @@ func RenderComponent(componentName string, storeName *string, props interface{})
         data-store-name='%s'
         style='display: none'>
       </div>
-    `, *storeName, jsonProps)
+    `, jsonProps, *storeName)
   }
 
   return &resp, nil
